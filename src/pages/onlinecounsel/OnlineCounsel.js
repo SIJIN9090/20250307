@@ -63,6 +63,9 @@ function OnlineCounsel() {
           columns={columns}
           linkPrefix={linkValue}
         />
+        <BottomBox>
+          <WriteGo />
+        </BottomBox>
         <PaginationBox>
           <CustomPagination
             page={page}
@@ -71,7 +74,6 @@ function OnlineCounsel() {
             totalCnt={totalCnt}
           />
         </PaginationBox>
-        <WriteGo />
       </ContentWrapper>
     </Container>
   );
@@ -96,18 +98,6 @@ const ContentWrapper = styled.div`
   align-items: center;
 `;
 
-const Title = styled.div`
-  width: 100%;
-  height: 50px;
-  margin-top: 100px;
-  text-align: left;
-  h1 {
-    font-weight: bold;
-    font-size: 36px;
-    font-family: "Noto Sans KR", serif;
-  }
-`;
-
 const PaginationBox = styled.div`
   padding: 10px;
   margin-bottom: 40px;
@@ -129,6 +119,18 @@ const PaginationBox = styled.div`
     display: inline-block;
     margin: 0 5px;
   }
+`;
+
+//  하단 버튼 박스
+const BottomBox = styled.div`
+  display: flex;
+  width: 100%;
+  max-width: 1000px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding-left: 140px;
+  padding-right: 140px;
 `;
 
 export default OnlineCounsel;

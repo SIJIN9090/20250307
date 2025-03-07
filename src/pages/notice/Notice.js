@@ -77,6 +77,11 @@ function Notice() {
           columns={columns}
           linkPrefix={linkValue}
         />
+        {role === "ROLE_ADMIN" && (
+          <BottomBox>
+            <WriteGo />
+          </BottomBox>
+        )}
         <PaginationBox>
           <CustomPagination
             page={page}
@@ -85,7 +90,6 @@ function Notice() {
             totalCnt={totalCnt}
           />
         </PaginationBox>
-        {role === "ROLE_ADMIN" && <WriteGo />}
       </ContentWrapper>
     </Container>
   );
@@ -110,18 +114,6 @@ const ContentWrapper = styled.div`
   align-items: center;
 `;
 
-const Title = styled.div`
-  width: 100%;
-  height: 50px;
-  margin-top: 100px;
-  text-align: left;
-  h1 {
-    font-weight: bold;
-    font-size: 36px;
-    font-family: "Noto Sans KR", serif;
-  }
-`;
-
 const PaginationBox = styled.div`
   padding: 10px;
   margin-bottom: 40px;
@@ -144,18 +136,17 @@ const PaginationBox = styled.div`
     margin: 0 5px;
   }
 `;
-const WriteButton = styled.button`
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  background-color: #111111;
-  color: white;
-  cursor: pointer;
-  margin-left: 10px;
 
-  &:hover {
-    background-color: #111111;
-  }
+//  하단 버튼 박스
+const BottomBox = styled.div`
+  display: flex;
+  width: 100%;
+  max-width: 1000px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding-left: 140px;
+  padding-right: 140px;
 `;
 
 export default Notice;

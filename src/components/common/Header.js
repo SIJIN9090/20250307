@@ -195,7 +195,7 @@ function Header() {
             <LoginBox>
               {useRole === "ROLE_ADMIN" ? (
                 <>
-                  <Link to="/admin" onClick={handleAdminPageClick}>
+                  <Link to="/admin/adminuser" onClick={handleAdminPageClick}>
                     <img src={myIcon} alt="관리자페이지" />
                     <LoginButton>관리자</LoginButton>
                   </Link>

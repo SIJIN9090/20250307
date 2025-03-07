@@ -23,7 +23,7 @@ import A_User from "./pages/admin/user/A_User";
 import A_UserLayout from "./pages/admin/user/A_UserLayout";
 import A_ReservationLayout from "../src/pages/admin/reservation/A_ReservationLayout";
 import A_Reservation from "../src/pages/admin/reservation/A_Reservation";
-
+import A_ReservationDetail from "../src/pages/admin/reservation/A_ReservationDetail";
 // 공지사항
 import NoticeLayout from "./pages/notice/NoticeLayout";
 import Notice from "./pages/notice/Notice";
@@ -98,6 +98,7 @@ const Router = () => {
 
           <Route path="a_reservation" element={<A_ReservationLayout />}>
             <Route index element={<A_Reservation />} />
+            <Route path=":reservationId" element={<A_ReservationDetail />} />
           </Route>
 
           <Route path="notice" element={<NoticeLayout />}>

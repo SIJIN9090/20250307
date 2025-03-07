@@ -1,105 +1,151 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
 import styled from "styled-components";
+import React, { useState, useEffect } from "react";
 
-function File({ noticeId }) {
-  const [files, setFiles] = useState([]);
+const File = ({ files, noticeId }) => {
+  const [accessToken, setAccessToken] = useState(""); // accessToken 상태
 
-  // 파일 목록을 noticeId에 맞게 불러오는 useEffect
   useEffect(() => {
-    const fetchFiles = async () => {
-      try {
-        const response = await axios.get(`/api/notice/${noticeId}/file`);
-        setFiles(response.data.noticeFiles || []); // 서버에서 받아온 파일 목록을 상태에 저장
-      } catch (error) {
-        console.error("파일 목록 불러오기 오류:", error);
-      }
-    };
-
-    if (noticeId) {
-      fetchFiles(); // noticeId가 존재하면 파일 목록을 불러옴
+    // 예를 들어 localStorage에서 access_token을 가져오는 경우
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      setAccessToken(token);
     }
-  }, [noticeId]);
+  }, []);
 
-  const downloadFile = async (fileId) => {
+  const handleDownload = async (fileId) => {
+    // 사용자에게 다운로드 확인을 요청
+    const isConfirmed = window.confirm("이 파일을 다운로드 하시겠습니까?");
+
+    if (!isConfirmed) {
+      // 사용자가 "취소"를 누르면 다운로드를 하지 않음
+      return;
+    }
+
     try {
-      // 파일을 다운로드할 때 fileId를 포함한 URL로 요청
-      const response = await axios.get(
-        `/api/notice/${noticeId}/file/${fileId}`,
-        { responseType: "blob" } // 파일을 blob 형식으로 받기
-      );
+      // 요청 헤더에 인증 토큰 추가
+      const response = await fetch(`/api/notice/${noticeId}/file/${fileId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`, // accessToken을 사용
+        },
+      });
 
-      // 서버에서 originFileName을 헤더에서 받아옴
-      const originFileName = response.headers["content-disposition"]
-        .split("filename=")[1]
-        .replace(/"/g, "");
+      if (!response.ok) {
+        throw new Error("Failed to fetch the file");
+      }
 
-      // 파일 다운로드 처리
-      const downloadUrl = window.URL.createObjectURL(new Blob([response.data]));
+      const blob = await response.blob();
+      const contentDisposition = response.headers.get("Content-Disposition");
+      const originFileName = contentDisposition
+        ? contentDisposition.split("originFileName=")[1].replace(/"/g, "")
+        : `file-${fileId}`;
+
+      // Create a link to trigger the download
       const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.setAttribute("download", originFileName); // originFileName으로 다운로드
-      document.body.appendChild(link);
+      link.href = URL.createObjectURL(blob);
+      link.download = originFileName;
       link.click();
+      URL.revokeObjectURL(link.href); // Clean up the URL object
     } catch (error) {
-      console.error("파일 다운로드 오류:", error);
+      console.error("File download error:", error);
     }
   };
 
+  if (!files || files.length === 0) {
+    return (
+      <FileBox>
+        <p>No files</p>
+      </FileBox>
+    );
+  }
+
   return (
-    <FileContainer>
-      {files.length > 0 ? (
-        files.map((file) => (
+    <FileBox>
+      <ul>
+        {files.map((file) => (
           <FileItem key={file.id}>
-            <FileButton onClick={() => downloadFile(file.id)}>
-              {file.originFileName} (다운로드)
-            </FileButton>
+            <FileDetails>
+              <FileName>{file.originFileName}</FileName>
+            </FileDetails>
+            <Actions>
+              {/* 다운로드 버튼 */}
+              <DownloadButton onClick={() => handleDownload(file.id)}>
+                Download
+              </DownloadButton>
+            </Actions>
           </FileItem>
-        ))
-      ) : (
-        <NoFilesMessage>파일이 없습니다.</NoFilesMessage>
-      )}
-    </FileContainer>
+        ))}
+      </ul>
+    </FileBox>
   );
-}
+};
 
-// 스타일 추가
-const FileContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 15px; // 파일 항목 간 간격 추가
-  padding: 20px;
-`;
-
-const FileItem = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+const FileBox = styled.div`
+  border: 2px solid #ccc;
+  padding: 10px 16px;
+  margin-top: 16px;
+  border-radius: 8px;
   background-color: #f9f9f9;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+  height: auto;
+  /* 세로 크기를 더 작게 설정 */
+  min-height: 60px;
 `;
 
-const FileButton = styled.button`
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
+const FileItem = styled.li`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e0e0e0;
 
-  &:hover {
-    background-color: #45a049;
+  &:last-child {
+    border-bottom: none;
   }
 `;
 
-const NoFilesMessage = styled.p`
-  color: #777;
-  font-size: 18px;
-  text-align: center;
+const FileDetails = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const FileName = styled.span`
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+`;
+
+const Actions = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Button = styled.button`
+  padding: 6px 12px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+const DownloadButton = styled(Button)`
+  background-color: #000; /* 검정색 배경 */
+  color: white;
+
+  &:hover {
+    background-color: #333; /* hover 시 더 어두운 검정색 */
+  }
 `;
 
 export default File;

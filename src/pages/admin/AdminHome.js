@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Outlet } from "react-router-dom";
 
 const AdminLayout = () => {
-  const [selectedMenu, setSelectedMenu] = useState("adminuser");
+  const [selectedMenu, setSelectedMenu] = useState("");
 
   const menuItems = [
     { title: "회원 관리", key: "adminuser", path: "adminuser" },

@@ -39,13 +39,14 @@ const Button = styled.button`
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  background-color: #111111;
-  color: white;
   cursor: pointer;
   margin-left: 10px;
+  background-color: #000; /* 검정색 배경 */
+  color: white;
 
   &:hover {
-    background-color: #111111;
+    background-color: #333; /* hover 시 더 어두운 검정색 */
   }
 `;
+
 export default List;

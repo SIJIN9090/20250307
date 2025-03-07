@@ -28,10 +28,10 @@ function A_User() {
   const linkValue = "adminuser";
   const columns = [
     { label: "No", field: "id" },
-    { label: "email", field: "email" },
-    { label: "nickName", field: "nickName" },
-    { label: "phoneNum", field: "phoneNum" },
-    { label: "Actions", field: "actions" },
+    { label: "이메일", field: "email" },
+    { label: "넥네임", field: "nickName" },
+    { label: "전화번호", field: "phoneNum" },
+    { label: "삭제", field: "actions" },
   ];
 
   const getBbsList = async (page) => {
@@ -71,7 +71,7 @@ function A_User() {
 
       if (response.status === 200) {
         alert("삭제하였습니다.");
-        navigate("admin/adminuser"); // 삭제 후 관리 페이지로 리디렉션
+        navigate("/admin/adminuser"); // 삭제 후 관리 페이지로 리디렉션
       } else {
         alert("삭제에 실패하였습니다.");
       }

@@ -21,20 +21,36 @@ function NoticeDetail() {
   const getBbsDetail = async () => {
     try {
       const response = await axios.get(`/api/notice/${noticeId}`);
-      console.log("[NoticeDetail.js] getBbsDetail() success :D");
-      console.log(response.data);
+      console.log("[NoticeDetail.js] getBbsDetail() success :D", response.data);
 
       setNotice(response.data);
 
       // 서버에서 받아온 파일 목록이 있는지 확인
-      if (response.data.files && Array.isArray(response.data.files)) {
-        setFiles(response.data.files); // 파일 목록이 배열인 경우에만 설정
+      if (
+        response.data.noticeFiles &&
+        Array.isArray(response.data.noticeFiles)
+      ) {
+        setFiles(response.data.noticeFiles); // 파일 목록이 배열인 경우에만 설정
       } else {
         setFiles([]); // 파일 목록이 없으면 빈 배열로 설정
       }
     } catch (error) {
-      console.log("[NoticeDetail.js] getBbsDetail() error :<");
-      console.error(error);
+      console.log("[NoticeDetail.js] getBbsDetail() error :<", error);
+    }
+  };
+
+  const deleteFile = async (fileId) => {
+    try {
+      await axios.delete(`/api/admin/notice/${noticeId}/file/${fileId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+      setFiles(files.filter((file) => file.id !== fileId)); // 삭제된 파일 제외하고 업데이트
+      alert("파일이 삭제되었습니다.");
+    } catch (err) {
+      console.error("[NoticeDetail.js] deleteFile() error :<", err);
+      alert("파일 삭제 실패");
     }
   };
 
@@ -48,6 +64,7 @@ function NoticeDetail() {
 
     getBbsDetail(); // noticeId가 있을 때만 데이터 요청
   }, [noticeId]);
+
   return (
     <Container>
       <ContentWrapper>
@@ -59,12 +76,16 @@ function NoticeDetail() {
               </tr>
               <tr>
                 <td>
-                  <File files={files} noticeId={noticeId} />{" "}
-                  {/* 파일 목록을 File 컴포넌트에 전달 */}
+                  <File
+                    files={files}
+                    noticeId={noticeId}
+                    deleteFile={deleteFile}
+                  />
+                  {/* 파일 목록을 File 컴포넌트에 전달, 삭제 함수도 전달 */}
                 </td>
               </tr>
               <tr>
-                <TableContent>{notice.content} </TableContent>
+                <TableContent>{notice.content}</TableContent>
               </tr>
             </tbody>
           </Table>

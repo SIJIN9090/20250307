@@ -14,10 +14,10 @@ function Department() {
   return (
     <DepartmentContainer>
       <DepartmentSection>
-        <DepartmentTitle>
-          <h1>진료과 소개</h1>
-        </DepartmentTitle>
-
+        <LoginBox>
+          <LoginTitle>진료과 소개</LoginTitle>
+          <LoginSub>하이펫병원의 진료과목을 소개합니다.</LoginSub>
+        </LoginBox>
         {/* New Section with 5 Horizontal Boxes */}
         <HorizontalBoxes>
           <Box id="internal">
@@ -127,29 +127,37 @@ const DepartmentContainer = styled.div`
   flex-direction: column;
   align-items: center;
 `;
-
 const DepartmentSection = styled.div`
   width: 100%;
   height: 1500px;
   max-width: 1280px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* 왼쪽 정렬 */
+  align-items: center; /* 중앙 정렬 */
 `;
 
-const DepartmentTitle = styled.div`
-  padding-left: 140px;
-
-  width: 100%;
-  height: 50px;
-  margin-top: 100px;
-  text-align: left;
-  h1 {
-    font-weight: bold;
-    font-size: 36px;
-    font-family: "Noto Sans KR", serif;
-    color: #333; /* 텍스트 색을 어두운 회색으로 */
-  }
+const LoginBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* height: 20vh; */ /* 불필요한 고정 높이 제거 */
+  pointer-events: none;
+  margin-top: 70px;
+  margin-bottom: 30px;
+`;
+const LoginTitle = styled.h1`
+  font-weight: 700;
+  line-height: 1.3em;
+  font-size: 42px;
+  color: #111;
+  text-align: center;
+`;
+const LoginSub = styled.p`
+  display: block;
+  margin-top: 1.5em;
+  color: #888888;
+  font-size: 14px;
+  text-align: center;
 `;
 
 // Horizontal container for boxes

@@ -9,9 +9,10 @@ function Directions() {
   return (
     <DirectionsContainer>
       <DirectionSection>
-        <DirectionTitle>
-          <h1>오시는 길</h1>
-        </DirectionTitle>
+        <LoginBox>
+          <LoginTitle>오시는길</LoginTitle>
+          <LoginSub>하이펫병원에 오시는 방법을 확인하세요.</LoginSub>
+        </LoginBox>
 
         <MapWrapper>
           <MapBox>
@@ -21,12 +22,7 @@ function Directions() {
 
         <InfoWrapper>
           <InfoBox>
-            <InfoImage
-             src={pic} 
-              alt="건물 위치"
-              width="100px"
-              height="100px"
-            />
+            <InfoImage src={pic} alt="건물 위치" width="100px" height="100px" />
             <InfoText>
               <h2>건물 위치</h2>
               <p>서울특별시 구로구 시흥대로 163길 33 2층, 3층 (주호타워)</p>
@@ -78,19 +74,29 @@ const DirectionSection = styled.div`
   align-items: center;
 `;
 
-const DirectionTitle = styled.div`
-  padding-left: 140px;
-  width: 100%;
-  height: 50px;
-  margin-top: 100px;
-  text-align: left;
-  h1 {
-    font-weight: bold;
-    font-size: 36px;
-    font-family: "Noto Sans KR", serif;
-  }
+const LoginBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 20vh;
+  pointer-events: none;
+  margin-top: 30px;
+  margin-bottom: 30px;
 `;
-
+const LoginTitle = styled.h1`
+  font-weight: 700;
+  line-height: 1.3em;
+  font-size: 42px;
+  color: #111;
+  text-align: center;
+`;
+const LoginSub = styled.p`
+  display: block;
+  margin-top: 1.5em;
+  color: #888888;
+  font-size: 14px;
+  text-align: center;
+`;
 const MapWrapper = styled.div`
   margin-top: 30px;
   width: 1000px;

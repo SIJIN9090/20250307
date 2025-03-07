@@ -35,14 +35,29 @@ const doctors = [
     imageUrl: do4,
   },
 ];
-
 function Introduce() {
   return (
     <IntroduceContainer>
       <IntroduceSection>
-        <IntroduceTitle>
-          <h1>개요</h1>
-        </IntroduceTitle>
+        <LoginBox>
+          <LoginTitle>개요</LoginTitle>
+          <LoginSub>하이펫병원의 비전과 미션을 소개합니다.</LoginSub>
+        </LoginBox>
+
+        <AboutHospitalContainer>
+          <AboutHospitalCard>
+            <div>
+              <AboutHospitalName>하이펫 병원</AboutHospitalName>
+              <AboutHospitalDescription>
+                하이펫병원은 동물들의 건강을 최우선으로 생각하는 종합병원입니다.
+                최신 의료 장비와 전문적인 의료진을 갖추고 있으며, 모든 동물이
+                편안하고 안전하게 치료를 받을 수 있도록 노력하고 있습니다.
+                우리는 동물들의 건강을 지키기 위해 최고의 서비스를 제공하고
+                있습니다.
+              </AboutHospitalDescription>
+            </div>
+          </AboutHospitalCard>
+        </AboutHospitalContainer>
 
         <DoctorsContainer>
           {doctors.map((doctor, index) => (
@@ -79,19 +94,72 @@ const IntroduceSection = styled.div`
   align-items: center;
 `;
 
-const IntroduceTitle = styled.div`
+const LoginBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 20vh;
+  pointer-events: none;
+  margin-top: 30px;
+  margin-bottom: 30px;
+`;
+const LoginTitle = styled.h1`
+  font-weight: 700;
+  line-height: 1.3em;
+  font-size: 42px;
+  color: #111;
+  text-align: center;
+`;
+const LoginSub = styled.p`
+  display: block;
+  margin-top: 1.5em;
+  color: #888888;
+  font-size: 14px;
+  text-align: center;
+`;
+const AboutHospitalContainer = styled.div`
   width: 100%;
-  height: 50px;
-  padding-left: 140px;
-  margin-top: 100px;
-  text-align: left;
-  h1 {
-    font-weight: bold;
-    font-size: 36px;
-    font-family: "Noto Sans KR", serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+`;
+
+const AboutHospitalCard = styled.div`
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 15px;
+  width: 80%;
+  max-width: 1280px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   }
 `;
 
+const AboutHospitalName = styled.h3`
+  font-weight: 500;
+  font-size: 24px;
+  color: #111111;
+  margin-bottom: 10px;
+`;
+
+const AboutHospitalDescription = styled.p`
+  font-weight: 400;
+  font-size: 16px;
+  color: #777;
+  line-height: 1.5;
+  text-align: left;
+  width: 80%; /* 내용이 넓게 퍼지도록 */
+`;
 const DoctorImage = styled.div`
   background-image: url(${(props) => props.imageUrl});
   background-size: cover;

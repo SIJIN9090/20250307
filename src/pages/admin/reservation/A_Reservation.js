@@ -1,77 +1,90 @@
-import React, { lazy, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import CommonTable from "../../../components/common/CommonTable";
 import CustomPagination from "../../../components/common/CustomPagination";
-import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 import
-import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate, Link } from "react-router-dom";
 
-function A_Reservation() {
+const A_Reservation = () => {
   const [bbsList, setBbsList] = useState([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalCnt, setTotalCnt] = useState(0);
-  const token = localStorage.getItem("access_token");
   const navigate = useNavigate();
+  const [linkValue, setLinkValue] = useState("/a_reservation"); // linkValue 상태 추가
+  const token = localStorage.getItem("access_token");
   let useRole = null;
+
   if (token) {
     try {
-      // 토큰 디코딩
-      console.log(token);
       const decodedToken = jwtDecode(token);
-      console.log(decodedToken);
       useRole = decodedToken.roles;
     } catch (e) {
-      console.log("토큰 디코딩 오류 : ", e);
+      console.error("토큰 디코딩 오류: ", e);
     }
   }
-  const linkValue = "adminuser";
+
   const columns = [
     { label: "No", field: "id" },
-    { label: "email", field: "email" },
-    { label: "nickName", field: "nickName" },
-    { label: "phoneNum", field: "phoneNum" },
-    { label: "Actions", field: "actions" },
+    { label: "이름", field: "nickName" },
+    { label: "동물", field: "petName" },
+    { label: "예약 날짜", field: "reservationDateTime" },
+    { label: "삭제", field: "actions" },
   ];
 
+  // 예약 리스트 가져오기
   const getBbsList = async (page) => {
     try {
-      const response = await axios.get("/api/admin/member", {
-        params: { page: page - 1 },
+      const response = await axios.get("/api/admin/reservation", {
+        params: { page: page - 1 }, // Spring pageable 처리
       });
-      setBbsList(response.data.content || []); // 응답이 없을 경우 빈 배열 처리
-      setPageSize(response.data.pageSize || 10);
+      setBbsList(response.data.content || []);
+      setPageSize(response.data.pageSize || 8);
       setTotalCnt(response.data.totalElements);
     } catch (error) {
-      console.error("Error fetching board data:", error);
+      console.error("예약 데이터 가져오기 오류:", error);
     }
   };
 
-  const handleDelete = async (memberId) => {
+  const handleDelete = async (reservationId) => {
+    // 나한테만 확인을 띄우는 부분
     const isConfirmed = window.confirm("정말로 삭제하시겠습니까?");
-    if (!isConfirmed) return;
 
-    // 리스트에서 삭제
-    setBbsList((prev) => prev.filter((item) => item.memberId !== memberId));
+    if (!isConfirmed) return; // 내가 취소하면 삭제를 진행하지 않음
 
     const token = localStorage.getItem("access_token");
-
     if (!token) {
       alert("로그인 정보가 없습니다.");
       return;
     }
 
     try {
-      // 삭제 요청
-      const response = await axios.delete(`/api/delete`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // 인증 토큰을 헤더에 포함
-        },
-      });
+      // 예약 데이터 가져오기
+      const getResponse = await axios.get(
+        `/api/admin/reservation/${reservationId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      if (response.status === 200) {
-        alert("삭제하였습니다.");
-        navigate("/adminuser"); // 삭제 후 관리 페이지로 리디렉션
+      const reservationData = getResponse.data;
+
+      // 바로 삭제 진행
+      const deleteResponse = await axios.delete(
+        `/api/admin/reservation/${reservationId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (deleteResponse.status === 200) {
+        alert(`예약자: ${reservationData.nickName}님의 예약이 삭제되었습니다.`);
+        getBbsList(page); // 삭제 후 목록 새로고침
       } else {
         alert("삭제에 실패하였습니다.");
       }
@@ -84,18 +97,20 @@ function A_Reservation() {
     }
   };
 
+  // 데이터에 빈 행 추가
+  const addEmptyRows = (data) => {
+    const rowsWithEmpty = [];
+    data.forEach((item) => {
+      rowsWithEmpty.push({});
+      rowsWithEmpty.push(item);
+    });
+    return rowsWithEmpty;
+  };
+
   useEffect(() => {
     getBbsList(page);
   }, [page]);
 
-  const addEmptyRows = (data) => {
-    const rowsWithEmpty = [];
-    data.forEach((item) => {
-      rowsWithEmpty.push({}); // 빈 데이터 행 추가 (공백 행)
-      rowsWithEmpty.push(item); // 데이터 행 추가
-    });
-    return rowsWithEmpty;
-  };
   const bbsListWithEmptyRows = addEmptyRows(bbsList);
 
   return (
@@ -106,7 +121,9 @@ function A_Reservation() {
             ...item,
             // 삭제 버튼
             actions: item.id ? (
-              <button onClick={() => handleDelete(item.id)}>삭제</button>
+              <button onClick={() => handleDelete(item.reservationId)}>
+                삭제
+              </button>
             ) : null, // 빈 행일 경우 삭제 버튼 없음
           }))}
           columns={columns}
@@ -123,7 +140,7 @@ function A_Reservation() {
       </ContentWrapper>
     </Container>
   );
-}
+};
 
 // 스타일 컴포넌트들
 const Container = styled.div`
