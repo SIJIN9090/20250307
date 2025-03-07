@@ -60,7 +60,9 @@ function Write({
     const req = { title, content };
 
     try {
-      const response = await axios.post("/api/question", req, { headers });
+      const response = await axios.post("/api/member/question", req, {
+        headers,
+      });
       const questionId = response.data.id;
 
       if (questionId) {
@@ -88,7 +90,7 @@ function Write({
     const req = { title, content };
 
     try {
-      const response = await axios.post("/api/review", req, { headers });
+      const response = await axios.post("/api/member/review", req, { headers });
       const answerId = response.data.id;
 
       if (answerId) {

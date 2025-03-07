@@ -23,7 +23,7 @@ function QuestionDetail() {
     }
 
     try {
-      const response = await axios.get(`/api/question/${questionId}`, {
+      const response = await axios.get(`/api/member/question/${questionId}`, {
         headers,
       });
       console.log("[questionDetail.js] getBbsDetail() success :D");

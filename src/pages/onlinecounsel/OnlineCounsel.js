@@ -22,7 +22,7 @@ function OnlineCounsel() {
   ];
   const getBbsList = async (page) => {
     try {
-      const response = await axios.get("/api/question", {
+      const response = await axios.get("/api/member/question", {
         params: { page: page - 1 },
       });
       setBbsList(response.data.content || []); // 응답이 없을 경우 빈 배열 처리

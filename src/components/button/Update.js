@@ -17,8 +17,8 @@ function Update({ noticeId, questionId, reviewId, navigate, title, content }) {
         apiUrl = `/api/admin/notice/${noticeId}`;
         redirectUrl = `/admin/notice/${noticeId}`;
       } else if (questionId) {
-        apiUrl = `/api/question/${questionId}`;
-        redirectUrl = `/question/${questionId}`;
+        apiUrl = `/api/member/question/${questionId}`;
+        redirectUrl = `/member/question/${questionId}`;
       } else if (reviewId) {
         apiUrl = `/api/review/${reviewId}`;
         redirectUrl = `/review/${reviewId}`;

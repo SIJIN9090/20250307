@@ -26,13 +26,13 @@ function Delete() {
       // 2️⃣ 질문 삭제
       else if (location.pathname.includes("/question/")) {
         const isAdmin = location.pathname.includes("/admin");
-        apiUrl = `/api/question/${questionId}`;
+        apiUrl = `/api/member/question/${questionId}`;
         redirectUrl = isAdmin ? "/admin/question" : "/question";
       }
       // 3️⃣ 리뷰 삭제
       else if (location.pathname.includes("/review/")) {
         const isAdmin = location.pathname.includes("/admin");
-        apiUrl = `/api/review/${reviewId}`;
+        apiUrl = `/api/member/review/${reviewId}`;
         redirectUrl = isAdmin ? "/admin/review" : "/review";
       }
 

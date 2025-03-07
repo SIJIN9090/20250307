@@ -25,7 +25,7 @@ function UpdateGo() {
 
   const getQuestionDetail = async () => {
     try {
-      const response = await axios.get(`/api/question/${questionId}`);
+      const response = await axios.get(`/api/member/question/${questionId}`);
       setQuestion(response.data); // 받아온 데이터를 question 상태에 저장
     } catch (error) {
       console.error("getQuestionDetail() error:", error);
@@ -70,11 +70,11 @@ function UpdateGo() {
     const isAdmin = location.pathname.includes("/admin"); // 어드민 여부 확인
 
     if (question) {
-      navigate(`${isAdmin ? "/admin" : ""}/question/${noticeId}/update`, {
+      navigate(`${isAdmin ? "/admin" : ""}/question/${questionId}/update`, {
         state: { bbs: question },
       });
     } else if (review) {
-      navigate(`${isAdmin ? "/admin" : ""}/review/${noticeId}/update`, {
+      navigate(`${isAdmin ? "/admin" : ""}/review/${reviewId}/update`, {
         state: { bbs: review },
       });
     } else {
