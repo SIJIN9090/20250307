@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { AuthContext, HttpHeadersContext } from "../../context";
 import axios from "axios";
@@ -10,9 +10,10 @@ import Write from "../../components/button/Write";
 
 function NoticelWrite() {
   const { headers, setHeaders } = useContext(HttpHeadersContext);
-
+  const location = useLocation();
   const navigate = useNavigate();
-
+  const { bbs } = location.state || {}; // bbs가 없으면 빈 객체를 사용
+  const noticeId = bbs?.id;
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [files, setFiles] = useState([]); // 추가: 파일 목록 상태 추가
@@ -30,11 +31,6 @@ function NoticelWrite() {
     // 총 5개까지만 허용
     const selectedFiles = Array.from(event.target.files).slice(0, 5);
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
-  };
-
-  // 주어진 배열의 일부에 대한 얕은 복사본을 생성
-  const handleRemoveFile = (index) => {
-    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
   /* 파일 업로드 */
@@ -57,9 +53,37 @@ function NoticelWrite() {
       alert("파일 업로드 성공 :D");
     } catch (err) {
       console.log("[FileData.js] fileUpload() error :<", err);
-      alert("파일 업로드 실패");
     }
   };
+
+  // 게시글 세부 정보 가져오기 (파일 목록 포함)
+  const getBbsDetail = async () => {
+    try {
+      const response = await axios.get(`/api/notice/${noticeId}`);
+      console.log("[NoticeDetail.js] getBbsDetail() success :D", response.data);
+
+      // 서버에서 받아온 파일 목록이 있으면 설정
+      if (
+        response.data.noticeFiles &&
+        Array.isArray(response.data.noticeFiles)
+      ) {
+        setFiles(response.data.noticeFiles);
+      } else {
+        setFiles([]); // 파일 목록이 없으면 빈 배열로 설정
+      }
+
+      setTitle(response.data.title);
+      setContent(response.data.content);
+    } catch (error) {
+      console.log("[NoticeDetail.js] getBbsDetail() error :<", error);
+    }
+  };
+
+  useEffect(() => {
+    if (noticeId) {
+      getBbsDetail(); // 게시글 세부 정보를 가져옴
+    }
+  }, [noticeId]);
 
   return (
     <Container>
@@ -93,7 +117,9 @@ function NoticelWrite() {
                       <div
                         key={index}
                         style={{ display: "flex", alignItems: "center" }}
-                      ></div>
+                      >
+                        <span>{file.name}</span>
+                      </div>
                     ))}
                     {files.length < 5 && (
                       <div>
@@ -202,30 +228,31 @@ const InputFile = styled.input`
   font-size: 16px;
   color: #111111;
   cursor: pointer;
-
+  position: relative;
   padding: 10px 20px;
   border: 1px solid #111111;
   border-radius: 5px;
   background-color: white;
   transition: background-color 0.3s ease;
-
+  left: 300px;
   &:hover {
     background-color: #f0f8f0;
   }
 `;
 
 const FileInputWrapper = styled.div`
-  align-items: center;
-  display: flex;
-  padding: 10px;
-  border: 2px dashed #ccc;
+  border: 2px solid #ccc;
+  padding: 10px 16px;
   border-radius: 8px;
   background-color: #f9f9f9;
-  width: 30%;
-  transition: background-color 0.3s ease;
+  max-width: 600px;
+  width: 100%;
+  height: auto;
+  min-height: 60px;
 
-  &:hover {
-    background-color: #f0f0f0;
+  span {
+    font-size: 14px;
+    font-weight: 500;
   }
 `;
 

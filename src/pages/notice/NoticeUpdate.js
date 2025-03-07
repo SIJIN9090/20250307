@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { AuthContext, HttpHeadersContext } from "../../context";
+import { HttpHeadersContext } from "../../context";
 import Update from "../../components/button/Update";
 import Back from "../../components/button/Back";
 
@@ -13,9 +13,19 @@ function NoticeUpdate() {
   const [title, setTitle] = useState(bbs?.title || "");
   const [content, setContent] = useState(bbs?.content || "");
   const [files, setFiles] = useState([]); // 추가: 파일 상태
+  const [fileNames, setFileNames] = useState([]); // 파일 이름을 저장할 상태 추가
   const [pageNumber] = useState(1);
   const { headers, setHeaders } = useContext(HttpHeadersContext);
   const noticeId = bbs?.id;
+  const [accessToken, setAccessToken] = useState(""); // accessToken 상태
+
+  useEffect(() => {
+    // 예를 들어 localStorage에서 access_token을 가져오는 경우
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      setAccessToken(token);
+    }
+  }, []);
 
   const changeTitle = (event) => {
     setTitle(event.target.value);
@@ -72,8 +82,11 @@ function NoticeUpdate() {
         Array.isArray(response.data.noticeFiles)
       ) {
         setFiles(response.data.noticeFiles);
+        // 파일 이름만 추출해서 상태에 저장
+        setFileNames(response.data.noticeFiles.map((file) => file.name));
       } else {
         setFiles([]); // 파일 목록이 없으면 빈 배열로 설정
+        setFileNames([]); // 파일 이름도 비워줌
       }
 
       setTitle(response.data.title);
@@ -84,10 +97,41 @@ function NoticeUpdate() {
   };
 
   useEffect(() => {
-    if (noticeId) {
-      getBbsDetail(); // 게시글 세부 정보를 가져옴
-    }
+    console.log("noticeId:", noticeId); // 콘솔로 확인
+    if (!noticeId) return;
+
+    setHeaders({
+      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+    });
+
+    getBbsDetail(); // noticeId가 있을 때만 데이터 요청
   }, [noticeId]);
+
+  const handleFileFetch = async (fileId) => {
+    try {
+      const response = await fetch(`/api/notice/${noticeId}/file/${fileId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch the file");
+      }
+
+      const blob = await response.blob();
+      const contentDisposition = response.headers.get("Content-Disposition");
+      const originFileName = contentDisposition
+        ? contentDisposition.split("originFileName=")[1].replace(/"/g, "")
+        : `file-${fileId}`;
+
+      // 파일 이름만 화면에 표시 (새로 추가한 상태로 처리)
+      setFileNames((prevFileNames) => [...prevFileNames, originFileName]);
+    } catch (error) {
+      console.error("File fetch error:", error);
+    }
+  };
 
   return (
     <Container>
@@ -106,14 +150,21 @@ function NoticeUpdate() {
               </tr>
               <UploadWrapper>
                 <FileInputWrapper>
-                  {files.map((file, index) => (
-                    <div
-                      key={index}
-                      style={{ display: "flex", alignItems: "center" }}
-                    >
-                      <span>{file.name}</span>
+                  {/* 파일 목록 표시 */}
+                  {fileNames.length > 0 && (
+                    <div>
+                      {fileNames.map((fileName, index) => (
+                        <div
+                          key={index}
+                          style={{ display: "flex", alignItems: "center" }}
+                        >
+                          <span>{fileName}</span> {/* 파일 이름만 표시 */}
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
+
+                  {/* 파일 입력 필드 - 파일이 5개 미만일 때만 표시 */}
                   {files.length < 5 && (
                     <div>
                       <InputFile
@@ -230,30 +281,32 @@ const InputFile = styled.input`
   font-size: 16px;
   color: #111111;
   cursor: pointer;
-
+  position: relative;
   padding: 10px 20px;
   border: 1px solid #111111;
   border-radius: 5px;
   background-color: white;
   transition: background-color 0.3s ease;
-
+  left: 300px;
   &:hover {
     background-color: #f0f8f0;
   }
 `;
 
 const FileInputWrapper = styled.div`
-  align-items: center;
-  display: flex;
-  padding: 10px;
-  border: 2px dashed #ccc;
+  border: 2px solid #ccc;
+  padding: 10px 16px;
   border-radius: 8px;
   background-color: #f9f9f9;
-  width: 30%;
-  transition: background-color 0.3s ease;
+  max-width: 600px;
+  width: 100%;
+  height: auto;
+  min-height: 60px;
 
-  &:hover {
-    background-color: #f0f0f0;
+  span {
+    font-size: 14px;
+    font-weight: 500;
   }
 `;
+
 export default NoticeUpdate;

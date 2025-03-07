@@ -39,21 +39,6 @@ function NoticeDetail() {
     }
   };
 
-  const deleteFile = async (fileId) => {
-    try {
-      await axios.delete(`/api/admin/notice/${noticeId}/file/${fileId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        },
-      });
-      setFiles(files.filter((file) => file.id !== fileId)); // 삭제된 파일 제외하고 업데이트
-      alert("파일이 삭제되었습니다.");
-    } catch (err) {
-      console.error("[NoticeDetail.js] deleteFile() error :<", err);
-      alert("파일 삭제 실패");
-    }
-  };
-
   useEffect(() => {
     console.log("noticeId:", noticeId); // 콘솔로 확인
     if (!noticeId) return;
@@ -76,12 +61,7 @@ function NoticeDetail() {
               </tr>
               <tr>
                 <td>
-                  <File
-                    files={files}
-                    noticeId={noticeId}
-                    deleteFile={deleteFile}
-                  />
-                  {/* 파일 목록을 File 컴포넌트에 전달, 삭제 함수도 전달 */}
+                  <File files={files} noticeId={noticeId} />
                 </td>
               </tr>
               <tr>
