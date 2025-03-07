@@ -60,6 +60,7 @@ function NoticelWrite() {
       alert("파일 업로드 실패");
     }
   };
+
   return (
     <Container>
       <ContentWrapper>
@@ -92,13 +93,7 @@ function NoticelWrite() {
                       <div
                         key={index}
                         style={{ display: "flex", alignItems: "center" }}
-                      >
-                        <button
-                          className="delete-button"
-                          type="button"
-                          onClick={() => handleRemoveFile(index)}
-                        ></button>
-                      </div>
+                      ></div>
                     ))}
                     {files.length < 5 && (
                       <div>
@@ -240,17 +235,4 @@ const BottomBox = styled.div`
   margin-top: 20px;
 `;
 
-const Button = styled.button`
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  background-color: #111111;
-  color: white;
-  cursor: pointer;
-  margin-left: 10px;
-
-  &:hover {
-    background-color: #111111;
-  }
-`;
 export default NoticelWrite;

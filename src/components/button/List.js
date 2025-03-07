@@ -44,6 +44,7 @@ const Button = styled.button`
   background-color: #000; /* 검정색 배경 */
   color: white;
 
+  margin-bottom: 50px;
   &:hover {
     background-color: #333; /* hover 시 더 어두운 검정색 */
   }

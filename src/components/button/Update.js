@@ -4,7 +4,15 @@ import axios from "axios";
 import React, { useContext } from "react";
 import { HttpHeadersContext } from "../../context";
 
-function Update({ noticeId, questionId, reviewId, navigate, title, content }) {
+function Update({
+  noticeId,
+  questionId,
+  reviewId,
+  navigate,
+  title,
+  content,
+  fileUpload,
+}) {
   const { httpHeaders } = useContext(HttpHeadersContext);
 
   const handleEditClick = async () => {
@@ -20,8 +28,8 @@ function Update({ noticeId, questionId, reviewId, navigate, title, content }) {
         apiUrl = `/api/member/question/${questionId}`;
         redirectUrl = `/member/question/${questionId}`;
       } else if (reviewId) {
-        apiUrl = `/api/review/${reviewId}`;
-        redirectUrl = `/review/${reviewId}`;
+        apiUrl = `/api/member/review/${reviewId}`;
+        redirectUrl = `/member/review/${reviewId}`;
       } else {
         alert("수정할 게시글이 없습니다.");
         return;
@@ -55,6 +63,7 @@ const Button = styled.button`
   margin-left: 10px;
   background-color: #000; /* 검정색 배경 */
   color: white;
+  margin-bottom: 50px;
 
   &:hover {
     background-color: #333; /* hover 시 더 어두운 검정색 */
