@@ -1,0 +1,117 @@
+* {
+  margin: 0, auto;
+  padding: 0;
+  list-style: none;
+}
+
+.homebox {
+  width: 1920px;
+}
+.slider-container {
+  width: 1280px;
+  min-width: 1280px;
+  height: 500px;
+}
+
+.slidImg {
+  width: 100%;
+  max-width: 1280px;
+  height: 500px;
+  justify-content: center;
+  align-items: center;
+}
+.titleBox {
+  position: absolute;
+  top: 400px;
+  width: 100px;
+  height: 100px;
+  text-align: center;
+  background-color: transparent;
+}
+.titleBox > h2 {
+  background-color: transparent;
+  color: white;
+}
+.sessionBox {
+  width: 100%;
+  height: 300px;
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.session {
+  display: flex;
+  gap: 20px;
+  padding: 0;
+}
+
+.sessions {
+  width: 200px;
+  height: 200px;
+  border: 1px solid black;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+.sessions a {
+  width: 100px;
+  height: 100px;
+  text-decoration: none;
+  background-color: white;
+}
+.bottomBox {
+  width: 100%;
+  height: 300px;
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.videoBox {
+  width: 400px;
+  height: 300px;
+  margin: 30px;
+}
+.boardBox {
+  width: 400px;
+  height: 300px;
+  background-color: white;
+  margin: 30px;
+  font-family: ;
+  font-weight: ;
+}
+.boardmini {
+  width: 100%;
+}
+.reviewmini {
+  width: 100%;
+  border: 1px solid black;
+  justify-content: space-between;
+  align-items: ;
+}
+
+.notice {
+  width: 40px;
+  height: 40px;
+  background-color: aqua;
+  position: absolute;
+  object-fit: contain;
+}
+
+.video {
+  width: 40px;
+  height: 40px;
+  background-color: aqua;
+}
+.home-MapBox {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-weight: reguler;
+  border-bottom: 1px solid #111;
+  justify-content: center;
+  align-items: start;
+}
